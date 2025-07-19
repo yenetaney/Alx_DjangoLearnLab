@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic.detail import DetailView
-from .models import Library
+from .models import Library, Book 
 # Create your views here.
 
 class LibraryDetailView(DetailView):
@@ -12,3 +12,7 @@ class LibraryDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['books'] = self.object.books.all()  # Access ManyToManyField
         return context
+    
+    def list_books_view(request):
+        books = Book.objects.all()
+        return render(request, 'relationship_app/list_books.html', {'books': books})
