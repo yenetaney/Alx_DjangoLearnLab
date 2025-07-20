@@ -29,4 +29,4 @@ def register(request):
             return redirect('home')  # Change 'home' to your desired redirect
     else:
         form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'relationship_app/register.html', {'form': form})
