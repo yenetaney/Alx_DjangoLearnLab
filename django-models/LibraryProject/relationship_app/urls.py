@@ -8,6 +8,6 @@ urlpatterns = [
     path('library/details/<int:library_id>/', views.library_detail_view, name='library-detail-fbv'),
     path('library/<int:pk>/', views.LibraryDetailView.as_view(), name='library-detail-cbv'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='login'), name='logout'),
     path('register/', views.register, name='register'),
 ]
