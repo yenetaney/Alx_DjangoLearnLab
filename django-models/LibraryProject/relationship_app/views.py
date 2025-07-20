@@ -54,3 +54,6 @@ def librarian_view(request):
 @check_role('Member')
 def member_view(request):
     return render(request, 'relationship_app/member_view.html')
+@user_passes_test(lambda u: u.is_superuser)
+def my_admin_view(request):
+    return render(request, 'relationship_app/admin_view.html')
