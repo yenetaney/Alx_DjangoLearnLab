@@ -33,6 +33,16 @@ SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
+# Prevent clickjacking
+X_FRAME_OPTIONS = 'DENY'
+
+# Prevent content-type sniffing
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Enable browser-based XSS protection (mostly older browsers)
+SECURE_BROWSER_XSS_FILTER = True
+
+
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
