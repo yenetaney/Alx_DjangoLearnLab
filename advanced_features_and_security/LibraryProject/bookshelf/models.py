@@ -31,3 +31,10 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+class Book(models.Model):
+    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=100)
+    published_date = models.DateField()
+    can_create = models.BooleanField(default=True)
+    can_delete = models.BooleanField(default=True)
