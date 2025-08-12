@@ -14,7 +14,7 @@ from .models import Post, Comment
 from .forms import CommentForm
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
-
+from django.shortcuts import get_object_or_404
 
 
 
@@ -160,3 +160,20 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         comment = self.get_object()
         return self.request.user == comment.author
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'comment_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.post = get_object_or_404(Post, pk=kwargs['post_id'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.post = self.post
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.post.get_absolute_url()
