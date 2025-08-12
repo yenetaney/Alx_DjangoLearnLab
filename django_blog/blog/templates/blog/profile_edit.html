@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Profile</title>
+</head>
+<body>
+    <h2>Edit Profile</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3>User Info</h3>
+        {{ user_form.as_p }}
+
+        <h3>Profile Info</h3>
+        {{ profile_form.as_p }}
+
+        <button type="submit">Save Changes</button>
+    </form>
+</body>
+</html>
