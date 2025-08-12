@@ -13,6 +13,24 @@ def setUp(self):
     self.client.force_authenticate(user=self.user)
 
 class BookAPITestCase(APITestCase):
+    def setUp(self):
+        # Create a user and log in
+        self.user = User.objects.create_user(username='testuser', password='pass123')
+        logged_in = self.client.login(username='testuser', password='pass123')
+        assert logged_in, "Login failed in test setup"
+
+        # Sample book and URLs
+        self.book = Book.objects.create(
+            title="Test Book",
+            author="Yonatan",
+            published_date="2024-01-01"
+        )
+        self.list_url = reverse('book-list')
+        self.detail_url = reverse('book-detail', args=[self.book.id])
+        self.create_url = reverse('book-create')
+        self.update_url = reverse('book-update', args=[self.book.id])
+        self.delete_url = reverse('book-delete', args=[self.book.id])
+
 
     def setUp(self):
         self.book = Book.objects.create(
