@@ -2,6 +2,15 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from .models import Book
+from rest_framework.test import APIClient
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+def setUp(self):
+    self.user = User.objects.create_user(username='testuser', password='pass')
+    self.client = APIClient()
+    self.client.force_authenticate(user=self.user)
 
 class BookAPITestCase(APITestCase):
 
