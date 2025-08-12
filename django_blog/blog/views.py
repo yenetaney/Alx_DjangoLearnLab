@@ -206,3 +206,17 @@ class PostsByTagView(ListView):
         context = super().get_context_data(**kwargs)
         context['tag_name'] = self.kwargs['tag_name']
         return context
+    
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'posts_by_tag.html'  # your tag-filtered posts template
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        tag_slug = self.kwargs['tag_slug']
+        return Post.objects.filter(tags__slug=tag_slug)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag_slug'] = self.kwargs['tag_slug']
+        return context

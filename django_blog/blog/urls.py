@@ -5,7 +5,7 @@ from . import views  # Your custom views (e.g., for registration)
 from .views import (
     PostListView, PostDetailView,
     PostCreateView, PostUpdateView, PostDeleteView, CommentUpdateView,
-    CommentDeleteView,CommentCreateView,PostSearchView,PostsByTagView, PostSearchView
+    CommentDeleteView,CommentCreateView,PostSearchView,PostsByTagView, PostSearchView,PostByTagListView
 )
 
 urlpatterns = [
@@ -26,4 +26,5 @@ urlpatterns = [
     path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment-update'),
     path('search/', PostSearchView.as_view(), name='post-search'),
     path('tags/<str:tag_name>/', PostsByTagView.as_view(), name='posts-by-tag'),
+    path('tags/<slug:tag_slug>/', PostByTagListView.as_view(), name='posts-by-tag'),
 ]
