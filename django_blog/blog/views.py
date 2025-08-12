@@ -36,6 +36,7 @@ class ProfileUpdateView(LoginRequiredMixin, View):
             'profile_form': profile_form,
         })
     
-class HomeView(View):
-    def get(self, request):
-        return render(request, 'base.html')
+def method(request):
+    # your code here
+    pass
+
