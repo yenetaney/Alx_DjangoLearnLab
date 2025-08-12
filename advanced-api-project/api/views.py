@@ -9,6 +9,7 @@ import django_filters
 from rest_framework.filters import SearchFilter
 from rest_framework.filters import OrderingFilter
 from rest_framework import filters
+from django_filters import rest_framework
 
 # Create your views here.
 class BookFilter(FilterSet):
