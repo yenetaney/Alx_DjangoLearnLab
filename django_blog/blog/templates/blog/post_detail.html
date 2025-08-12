@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ post.title }}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <h1>{{ post.title }}</h1>
+    <p>By {{ post.author.username }} on {{ post.created_at|date:"F j, Y" }}</p>
+    <div>
+        {{ post.content|linebreaks }}
+    </div>
+
+    {% if user == post.author %}
+        <p>
+            <a href="{% url 'post-update' post.pk %}">Edit</a> |
+            <a href="{% url 'post-delete' post.pk %}">Delete</a>
+        </p>
+    {% endif %}
+
+    <p><a href="{% url 'post-list' %}">Back to all posts</a></p>
+</body>
+</html>
