@@ -15,7 +15,7 @@ from .forms import CommentForm
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-
+from django.db.models import Q
 
 
 # Create your views here.
@@ -177,3 +177,32 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return self.post.get_absolute_url()
+    
+class PostSearchView(ListView):
+    model = Post
+    template_name = 'post_search.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q', '')
+        if query:
+            return Post.objects.filter(
+                Q(title__icontains=query) |
+                Q(content__icontains=query) |
+                Q(tags__name__icontains=query)  # for django-taggit
+            ).distinct()
+        return Post.objects.none()
+    
+class PostsByTagView(ListView):
+    model = Post
+    template_name = 'posts_by_tag.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        tag_name = self.kwargs['tag_name']
+        return Post.objects.filter(tags__name=tag_name)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag_name'] = self.kwargs['tag_name']
+        return context

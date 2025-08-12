@@ -47,7 +47,7 @@ class ProfileForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content']  # author is not included as a form field
+        fields = ['title', 'content','tags',]  # author is not included as a form field
 
     def __init__(self, *args, **kwargs):
         # Optionally customize form initialization here
