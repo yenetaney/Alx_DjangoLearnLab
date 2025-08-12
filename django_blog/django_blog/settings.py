@@ -81,8 +81,12 @@ STATICFILES_DIRS = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'django_blog',
+        'USER': 'django_user',
+        'PASSWORD': '#Yoni1590',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
