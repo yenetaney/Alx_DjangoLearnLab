@@ -7,6 +7,7 @@ from .models import UserProfile
 from django import forms
 from .models import Post
 from .models import Comment
+from taggit.forms import TagWidget
 
 
 
@@ -48,6 +49,9 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'content','tags',]  # author is not included as a form field
+        widgets = {
+            'tags': TagWidget(),  # customize the tags field with TagWidget
+        }
 
     def __init__(self, *args, **kwargs):
         # Optionally customize form initialization here
