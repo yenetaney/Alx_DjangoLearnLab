@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from .models import UserProfile
 from django import forms
 from .models import Post
+from .models import Comment
 
 
 
@@ -59,3 +60,13 @@ class PostForm(forms.ModelForm):
         # Add any other validation logic here
         return title
 
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']  # Only expose 'content' for input
+
+    def clean_content(self):
+        content = self.cleaned_data.get('content')
+        if not content or content.strip() == '':
+            raise forms.ValidationError("Comment cannot be empty.")
+        return content

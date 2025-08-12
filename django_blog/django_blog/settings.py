@@ -90,6 +90,14 @@ DATABASES = {
     }
 }
 
+STATICFILES_DIRS = [
+    "C:/Users/Hp/Alx_DjangoLearnLab/django_blog/static",
+]
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
