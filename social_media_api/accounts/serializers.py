@@ -4,6 +4,25 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 
 User = get_user_model()
+class UserProfileSerializer(serializers.ModelSerializer):
+    followers = serializers.SerializerMethodField()
+    following = serializers.SerializerMethodField()
+    profile_picture = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'bio', 'profile_picture', 'followers', 'following']
+
+    def get_followers(self, obj):
+        return obj.followers.count()
+
+    def get_following(self, obj):
+        return obj.following.count()
+
+    def get_profile_picture(self, obj):
+        return obj.profile_picture.url if obj.profile_picture else None
+
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required= True, write_only= True)

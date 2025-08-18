@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
-from .serializers import UserRegistrationSerializer, UserLoginSerializer
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer
 from rest_framework.permissions import IsAuthenticated ,AllowAny
 
 # Create your views here.
@@ -38,13 +38,7 @@ class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
-        return Response({
-            "username": user.username,
-            "email": user.email,
-            "bio": user.bio,
-            "profile_picture": user.profile_picture.url if user.profile_picture else None,
-            "followers": user.followers.count(),
-            "following" : user.following.count(),
-        })
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data)
+
 
