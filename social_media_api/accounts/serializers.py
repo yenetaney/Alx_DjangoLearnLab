@@ -21,9 +21,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data['password'])
         user.save()
-
-        Token.objects.create(user = user)
         return user
+    
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
             raise serializers.ValidationError("Username already taken.")
@@ -37,4 +36,5 @@ class UserLoginSerializer(serializers.Serializer):
         user = authenticate(username=data['username'], password=data['password'])
         if not user:
             raise serializers.ValidationError("Invalid credentials.")
-        return {'user': user}
+        data['user'] = user
+        return data
