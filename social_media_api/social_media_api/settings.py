@@ -30,7 +30,11 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+AUTH_USER_MODEL = "accounts.CustomUser"
+
+
 INSTALLED_APPS = [
+    'rest_framework.authtoken',
     'rest_framework',
     'accounts',
     'django.contrib.admin',
@@ -73,7 +77,7 @@ WSGI_APPLICATION = 'social_media_api.wsgi.application'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        
+        'rest_framework.authentication.TokenAuthentication',
     ),
 }
 
