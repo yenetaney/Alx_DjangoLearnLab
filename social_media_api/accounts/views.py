@@ -1,7 +1,34 @@
-from django.shortcuts import render
-from rest_framework import generics
-from rest_framework.permissions import AllowAny
-from rest_framework_simplejwt.views import TokenObtainPairView
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+from .serializers import UserRegistrationSerializer, UserLoginSerializer
 
 # Create your views here.
+
+class UserRegistrationView(APIView):
+    def post(self, request):
+        serializer = UserRegistrationSerializer(data = request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            token = Token.objects.get(user=user)
+            return Response(
+                {"token": token.key, "username":user.username}, status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserLoginView(APIView):
+    def post(self, request):
+        serializer = UserLoginSerializer(data= request.data)
+        if serializer.is_valid():
+            username = serializer.validate_data['username']
+            password = serializer.validate_data['password']
+            user = authenticate(username = username, password = password)
+            if user:
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({"token":token.key, "username": user.username})
+            return Response({"error": "invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
