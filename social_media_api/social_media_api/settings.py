@@ -73,6 +73,7 @@ WSGI_APPLICATION = 'social_media_api.wsgi.application'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        
     ),
 }
 
