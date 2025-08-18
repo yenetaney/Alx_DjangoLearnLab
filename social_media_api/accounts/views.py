@@ -28,7 +28,7 @@ class UserLoginView(APIView):
             if user:
                 token, _ = Token.objects.get_or_create(user=user)
                 return Response({"token":token.key, "username": user.username})
-            return Response({"error": "invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({{"detail": "Invalid credentials"}}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
