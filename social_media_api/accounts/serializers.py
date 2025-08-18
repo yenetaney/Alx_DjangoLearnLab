@@ -11,18 +11,18 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email', 'password', 'bio', 'profile_picture']
 
-        def create(self, validate_data):
-            user = User( 
-                username = validate_data['username'],
-                email = validate_data('email', ''),
-                bio = validate_data('bio', ''),
-                profile_picture = validate_data('profile_picture', None),
-            )
-            user.set_password(validate_data['password'])
-            user.save()
+    def create(self, validated_data):
+        user = User( 
+            username=validated_data['username'],
+            email=validated_data.get('email', ''),
+            bio=validated_data.get('bio', ''),
+            profile_picture = validated_data.get('profile_picture', None),
+        )
+        user.set_password(validated_data['password'])
+        user.save()
 
-            Token.objects.create(user = user)
-            return user
+        Token.objects.create(user = user)
+        return user
         
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
