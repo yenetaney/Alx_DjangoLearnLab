@@ -30,8 +30,9 @@ class CommentViewSet(viewsets.ModelViewSet):
 class FeedView(APIView):
     def get(self, request):
         user = request.user
-        followed_user = user.objects.all()
+        following_users = user.objects.all()
 
-        posts = Post.objects.filter(user__in=followed_user).order_by('-created_at')
+        posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
+
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
