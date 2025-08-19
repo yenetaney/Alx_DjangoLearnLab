@@ -1,13 +1,14 @@
-from rest_framework.views import APIView
+from rest_framework.views import APIView, modelviews
 from rest_framework.response import Response
 from rest_framework import status, viewsets, permissions
+from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticated ,AllowAny
 from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
-from .models import User
+from .models import CustomUser
 
 # Create your views here.
 
@@ -44,18 +45,13 @@ class UserProfileView(APIView):
         serializer = UserProfileSerializer(request.user)
         return Response(serializer.data)
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+class UserViewSet(ModelViewSet):
+    queryset = CustomUser.objects.all()
+    # Add serializer_class and permissions as needed
 
     @action(detail=True, methods=['post'])
     def follow(self, request, pk=None):
-        target_user = get_object_or_404(User, pk=pk)
-
-    # Only allow the authenticated user to modify their own following list
-        if request.user.id != request.user.id:
-            return Response({'detail': 'Permission denied.'}, status=status.HTTP_403_FORBIDDEN)
+        target_user = get_object_or_404(CustomUser, pk=pk)
 
         if target_user == request.user:
             return Response({'detail': 'You cannot follow yourself.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -65,10 +61,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def unfollow(self, request, pk=None):
-        target_user = get_object_or_404(User, pk=pk)
-
-        if request.user.id != request.user.id:
-            return Response({'detail': 'Permission denied.'}, status=status.HTTP_403_FORBIDDEN)
+        target_user = get_object_or_404(CustomUser, pk=pk)
 
         request.user.following.remove(target_user)
         return Response({'detail': f'You have unfollowed {target_user.username}.'}, status=status.HTTP_200_OK)

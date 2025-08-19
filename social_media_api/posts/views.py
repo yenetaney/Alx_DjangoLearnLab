@@ -3,6 +3,8 @@ from .serializers import PostSerializer, CommentSerializer
 from rest_framework import viewsets, permissions, filters
 from .models import Post, Comment
 from .permissions import IsOwnerOrReadOnly
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 # Create your views here.
 
@@ -24,3 +26,12 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+class FeedView(APIView):
+    def get(self, request):
+        user = request.user
+        followed_user = user.objects.all()
+
+        posts = Post.objects.filter(user__in=followed_user).order_by('-created_at')
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
