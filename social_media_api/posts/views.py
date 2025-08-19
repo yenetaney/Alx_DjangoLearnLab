@@ -1,15 +1,18 @@
 from django.shortcuts import render
 from .serializers import PostSerializer, CommentSerializer
-from rest_framework import viewsets, permissions 
+from rest_framework import viewsets, permissions, filters
 from .models import Post, Comment
 from .permissions import IsOwnerOrReadOnly
 
 # Create your views here.
 
-class CreatePostView(viewsets.ModelViewSet):
+class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'content']
+
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
