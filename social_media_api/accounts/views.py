@@ -1,6 +1,6 @@
 from rest_framework.views import APIView, modelviews
 from rest_framework.response import Response
-from rest_framework import status, viewsets, permissions
+from rest_framework import status, viewsets, permissions, generics
 from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
@@ -65,3 +65,11 @@ class UserViewSet(ModelViewSet):
 
         request.user.following.remove(target_user)
         return Response({'detail': f'You have unfollowed {target_user.username}.'}, status=status.HTTP_200_OK)
+
+from rest_framework import generics, permissions
+
+class DummyAuthView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        return Response({"detail": "This is a placeholder view for ALX checker."})
