@@ -1,10 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets, permissions
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticated ,AllowAny
+from rest_framework.decorators import action
+from django.shortcuts import get_object_or_404
+from .models import User
 
 # Create your views here.
 
@@ -41,4 +44,31 @@ class UserProfileView(APIView):
         serializer = UserProfileSerializer(request.user)
         return Response(serializer.data)
 
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
+    @action(detail=True, methods=['post'])
+    def follow(self, request, pk=None):
+        target_user = get_object_or_404(User, pk=pk)
+
+    # Only allow the authenticated user to modify their own following list
+        if request.user.id != request.user.id:
+            return Response({'detail': 'Permission denied.'}, status=status.HTTP_403_FORBIDDEN)
+
+        if target_user == request.user:
+            return Response({'detail': 'You cannot follow yourself.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        request.user.following.add(target_user)
+        return Response({'detail': f'You are now following {target_user.username}.'}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def unfollow(self, request, pk=None):
+        target_user = get_object_or_404(User, pk=pk)
+
+        if request.user.id != request.user.id:
+            return Response({'detail': 'Permission denied.'}, status=status.HTTP_403_FORBIDDEN)
+
+        request.user.following.remove(target_user)
+        return Response({'detail': f'You have unfollowed {target_user.username}.'}, status=status.HTTP_200_OK)

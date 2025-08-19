@@ -65,4 +65,11 @@ class UserLoginSerializer(serializers.Serializer):
         data['token'] = token.key
         return data
 
-       
+class UserSerializer(serializers.ModelSerializer):
+    followers = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    following = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'followers', 'following']
+     
