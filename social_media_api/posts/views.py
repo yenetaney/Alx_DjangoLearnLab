@@ -9,6 +9,8 @@ from notifications.models import Notification
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.contenttypes.models import ContentType
+from notifications.utils import create_notification
+
 
 # Create your views here.
 
@@ -30,6 +32,13 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+        comment = serializer.save(author=self.request.user)
+        create_notification(
+            recipient=comment.post.author,
+            actor=self.request.user,
+            verb='commented on your post',
+            target=comment.post
+    )
 
 class FeedView(APIView):
     def get(self, request):
