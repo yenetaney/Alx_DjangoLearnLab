@@ -28,6 +28,7 @@ X_FRAME_OPTIONS = 'DENY'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = False
 
 ALLOWED_HOSTS = []
