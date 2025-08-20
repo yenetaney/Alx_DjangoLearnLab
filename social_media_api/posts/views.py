@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .serializers import PostSerializer, CommentSerializer
-from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, permissions, status
 from .models import Post, Comment, Like
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.views import APIView
@@ -10,20 +10,42 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.contenttypes.models import ContentType
 from notifications.utils import create_notification
+from rest_framework.decorators import action
 
 
 # Create your views here.
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all().order_by('-created_at')
+    queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['title', 'content']
+    permission_classes = [IsAuthenticated]
 
+    @action(detail=True, methods=['post'])
+    def like(self, request, pk=None):
+        post = get_object_or_404(Post, pk=pk)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        if created:
+            create_notification(
+                recipient=post.author,
+                actor=request.user,
+                verb='liked your post',
+                target=post
+            )
+            return Response({'detail': 'You liked this post.'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'detail': 'You already liked this post.'}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def unlike(self, request, pk=None):
+        post = get_object_or_404(Post, pk=pk)
+        try:
+            like = Like.objects.get(user=request.user, post=post)
+            like.delete()
+            return Response({'detail': 'You unliked this post.'}, status=status.HTTP_200_OK)
+        except Like.DoesNotExist:
+            return Response({'detail': 'You have not liked this post.'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all().order_by('-created_at')
