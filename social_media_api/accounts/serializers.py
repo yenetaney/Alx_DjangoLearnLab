@@ -22,8 +22,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_profile_picture(self, obj):
         return obj.profile_picture.url if obj.profile_picture else None
 
-
-
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required= True, write_only= True)
     username = serializers.CharField(required=True)

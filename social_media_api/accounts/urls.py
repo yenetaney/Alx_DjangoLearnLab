@@ -11,7 +11,7 @@ urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='register'),
     path('login/', UserLoginView.as_view(), name='login'),
     path('profile/', UserProfileView.as_view(), name='profile'),
-     path('follow/<int:user_id>', UserViewSet.as_view({'post': 'follow'}), name='follow-user'),
+    path('follow/<int:user_id>', UserViewSet.as_view({'post': 'follow'}), name='follow-user'),
     path('unfollow/<int:user_id>/', UserViewSet.as_view({'post': 'unfollow'}), name='unfollow-user'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
