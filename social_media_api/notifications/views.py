@@ -1,28 +1,10 @@
-from django.shortcuts import render
-
-# Create your views here.
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from rest_framework import viewsets, permissions
 from .models import Notification
+from .serializers import NotificationSerializer
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_notifications(request):
-    user = request.user
-    notifications = user.notifications.order_by('-timestamp')
-    unread = notifications.filter(read=False)
+class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-    data = {
-        'unread_count': unread.count(),
-        'notifications': [
-            {
-                'actor': n.actor.username,
-                'verb': n.verb,
-                'target': str(n.target),
-                'timestamp': n.timestamp,
-                'read': n.read
-            } for n in notifications
-        ]
-    }
-    return Response(data)
+    def get_queryset(self):
+        return Notification.objects.filter(recipient=self.request.user).order_by('-timestamp')
