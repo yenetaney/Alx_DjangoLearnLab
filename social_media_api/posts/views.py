@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .serializers import PostSerializer, CommentSerializer
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, generics
 from .models import Post, Comment, Like
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.views import APIView
@@ -38,7 +38,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def unlike(self, request, pk=None):
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
         try:
             like = Like.objects.get(user=request.user, post=post)
             like.delete()
